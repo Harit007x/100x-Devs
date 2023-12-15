@@ -4,11 +4,17 @@ import Todo from "./todo";
 import Progress from "./progress";
 import Done from "./done";
 import { Plus } from "lucide-react";
+import { DragDropContext } from "react-beautiful-dnd";
+import DragAndDropHook from "@/hooks/dragAndDropHook";
 
-const Kanban = () => {
+interface IKanbanProps{
+  move: any
+}
+
+const Kanban = (props:IKanbanProps) => {
   // const [isAddTodo, setIsAddTodo] = useState<boolean>(false);
   // const [todo, setTodo] = useState<Array<{id?: number, content: string}>>();
-  
+  // const {onDragEnd} = DragAndDropHook();
 
   return (
     <div 
@@ -31,27 +37,15 @@ const Kanban = () => {
           className="flex"
           value="board"
         >
-          <div
-            className="flex flex-col items-start gap-4"
-          >
-            <div className="flex justify-between gap-[274px]">
-              <Label className="text-xl pl-2">Todo</Label>
-              <Plus/>
-            </div>
-            <Todo/>
-          </div>
-          <div
-            className="flex flex-col items-start gap-4"
-          >
-            <Label className="text-xl pl-2">Progress</Label>
-            <Progress/>
-          </div>
-          <div
+
+            <Todo move={props.move}/>
+            {/* <Progress/> */}
+          {/* <div
             className="flex flex-col items-start gap-4"
           >
             <Label className="text-xl pl-2">Done</Label>
             <Done/>
-          </div>
+          </div> */}
         </TabsContent>
       </Tabs>
     </div>
