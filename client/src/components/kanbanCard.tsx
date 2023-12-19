@@ -61,8 +61,8 @@ const KanbanCard = ({
                         </div>
                     </CardTitle>
                 </CardHeader>
-                <CardContent className='flex w-[300px] flex-row text-start p-0 pl-6 pt-2 pr-2 pb-2 '>
-                    <CardDescription>{description}</CardDescription>
+                <CardContent className='flex w-[300px] h-[60px] flex-row text-start p-0 pl-6 pt-2 pr-2 pb-2 '>
+                    <CardDescription>{description.substring(0, 110) + '...'}</CardDescription>
                 </CardContent>
             </div>
             <CardFooter className='flex flex-row text-start justify-between p-0 px-4 pb-4'>

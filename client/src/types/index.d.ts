@@ -58,3 +58,8 @@ export type TaskList = {
   title: string;
   taskItems: ListItem[];
 }
+
+export type DropItem = {
+  droppableId: string;
+  index: number;
+}

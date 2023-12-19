@@ -8,18 +8,20 @@ import {
 	Routes,
 } from 'react-router-dom';
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from './components/ui/toaster';
 
 function App() {
 
   return (
     <ThemeProvider>
-      <Router>
-          <Routes>
-            <Route path='/' element={<Nav item={dashboardConfig.mainNav} />}>
-              <Route path='/kanban' element={<KanbanContainer />} />
-            </Route>
-          </Routes>
-      </Router>
+      <Toaster/>
+        <Router>
+            <Routes>
+              <Route path='/' element={<Nav item={dashboardConfig.mainNav} />}>
+                <Route path='/kanban' element={<KanbanContainer />} />
+              </Route>
+            </Routes>
+        </Router>
     </ThemeProvider>
   )
 }

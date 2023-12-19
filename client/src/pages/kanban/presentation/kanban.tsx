@@ -1,21 +1,16 @@
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Todo from "./todo";
-import Progress from "./progress";
-import Done from "./done";
-import { Plus } from "lucide-react";
-import { DragDropContext } from "react-beautiful-dnd";
-import DragAndDropHook from "@/hooks/dragAndDropHook";
-
+import Board from "./board";
 interface IKanbanProps{
-  move: any
+  state: any
+  setState:any
+  onDragEnd:any
+  addCategory:any
+  setAddCategory: any
+  handleAddingCategory:any
+  handleAddTask:any
 }
 
 const Kanban = (props:IKanbanProps) => {
-  // const [isAddTodo, setIsAddTodo] = useState<boolean>(false);
-  // const [todo, setTodo] = useState<Array<{id?: number, content: string}>>();
-  // const {onDragEnd} = DragAndDropHook();
-
   return (
     <div 
       className="flex flex-col mx-6 py-6"
@@ -25,7 +20,6 @@ const Kanban = (props:IKanbanProps) => {
       >
         Kanban
       </div>
-      {/* <Separator className="w-96"/> */}
       <Tabs defaultValue="account" className="flex flex-col items-start pl-4 p-4 w-[400px]">
         <TabsList className="mb-4">
           <TabsTrigger value="board">Board</TabsTrigger>
@@ -37,15 +31,15 @@ const Kanban = (props:IKanbanProps) => {
           className="flex"
           value="board"
         >
-
-            <Todo move={props.move}/>
-            {/* <Progress/> */}
-          {/* <div
-            className="flex flex-col items-start gap-4"
-          >
-            <Label className="text-xl pl-2">Done</Label>
-            <Done/>
-          </div> */}
+          <Board 
+            state={props.state}
+            setState={props.setState}
+            onDragEnd={props.onDragEnd}
+            addCategory={props.addCategory}
+            setAddCategory={props.setAddCategory}
+            handleAddingCategory={props.handleAddingCategory}
+            handleAddTask={props.handleAddTask}
+          />
         </TabsContent>
       </Tabs>
     </div>

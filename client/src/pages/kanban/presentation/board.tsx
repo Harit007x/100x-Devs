@@ -1,7 +1,7 @@
 import KanbanCard from "@/components/kanbanCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Task, TaskList } from "@/types";
+import { TaskList } from "@/types";
 import {
   Dialog,
   DialogClose,
@@ -12,9 +12,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Plus, Trash } from "lucide-react";
+import { Plus} from "lucide-react";
 import { useState } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import {
   Select,
@@ -28,132 +27,48 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
 
 import { Label } from "@/components/ui/label";
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/use-toast";
 interface ITodoProps{
-  move: () => void;
+  state: any;
+  setState: any;
+  onDragEnd:any;
+  addCategory:any;
+  setAddCategory:any;
+  handleAddingCategory:any;
+  handleAddTask:any;
 }
-interface DropItem {
-  droppableId: string;
-  index: number;
-}
 
-const getItems = (count:number, offset = 0) =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k + offset}-${new Date().getTime()}`,
-    task_name: `Task is ${k+offset}`,
-    description: `item ${k + offset}`,
-    badge_color:'green',
-    badge_text: `badge ${k + offset}`,
-}));
-
-const reorder = (list:TaskList, startIndex: number, endIndex: number) => {
-  // console.log("recordering  -", list)
-  const result = Array.from(list.taskItems);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-  // console.log("return item -", result)
-  return {"title": list.title, "taskItems": result };
-};
-
-let defaultTasks: TaskList[] = []
-const move = (source: TaskList, destination: TaskList, droppableSource: DropItem, droppableDestination: DropItem) => {
-  const sourceClone = Array.from(source.taskItems);
-  const destClone = Array.from(destination.taskItems);
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-  destClone.splice(droppableDestination.index, 0, removed);
-
-  const result: TaskList[] = [{"title": "Todo", "taskItems": []},{"title": "In-Progress", "taskItems": []}, ...defaultTasks];
-  result[Number(droppableSource.droppableId)].taskItems = sourceClone;
-  result[Number(droppableDestination.droppableId)].taskItems = destClone;
-  // console.log("result araya  =", result)
-  return result;
-};
+// const getItems = (count:number, offset = 0) =>
+//   Array.from({ length: count }, (v, k) => k).map(k => ({
+//     id: `item-${k + offset}-${new Date().getTime()}`,
+//     task_name: `Task is ${k+offset}`,
+//     description: `item ${k + offset}`,
+//     badge_color:'green',
+//     badge_text: `badge ${k + offset}`,
+// }));
 
 
 
-const Todo = (props: ITodoProps) => {
+
+
+
+const Board = (props: ITodoProps) => {
   const form = useForm()
+  const { toast } = useToast()
 
   const onSubmit = (formData:any) => {
-    handleAddTask(formData)
-    console.log("form Data -", formData)
+    props.handleAddTask(formData)
+    // console.log("form Data -", formData)
   }
-  const [state, setState] = useState<TaskList[]>([]);
-  const onDragEnd = (result:any) => {
-    const { source, destination } = result;
-
-    // dropped outside the list
-    if (!destination) {
-      return;
-    }
-    const sInd = +source.droppableId;
-    const dInd = +destination.droppableId;
-    // console.log("source dest -", source, destination)
-    // console.log("temp -", state,'----',sInd,'------------', state[sInd])
-    if (sInd === dInd) {
-      const items = reorder(state[sInd], source.index, destination.index);
-      const newState = [...state];
-      // console.log("new item =", items)
-      newState[sInd] = items;
-      setState(newState);
-    } else {
-      const result = move(state[sInd], state[dInd], source, destination);
-      const newState = [...state];
-      newState[sInd] = result[sInd];
-      newState[dInd] = result[dInd];
-
-      // console.log("the newwest one oeneone -", newState)
-      setState(newState);
-    }
-  }
-  // console.log("updated satte =", state)
-  const [addCategory, setAddCategory] = useState<string>('');
-
-  const handleAddingCategory = (category: string) => {
-    const words = category.split(" ");
-    const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-    const capitalizedString = capitalizedWords.join(" ");
-    setState([...state, {'title': capitalizedString, 'taskItems': []}])
-    defaultTasks.push({'title': capitalizedString, 'taskItems': []})
-    setAddCategory('')
-  }
-
-  const [newTask, setNewTask] = useState<string>('');
-
-  const handleAddTask = (formData:any) => {
-    // console.log("cei sos ao =", formData.title)
-    const updatedTotal: any = state.map((list) => {
-      if (list.title === formData.title) {
-        return {
-          ...list,
-          taskItems: [
-            ...list.taskItems,
-            {
-              id: `item-${Date.now()}`,
-              task_name: formData.task_name,
-              description: formData.description,
-              badge_text: formData.badge_text,
-              badge_color: formData.badge_color,
-            }
-          ],
-        };
-      }
-      return list;
-    }
-    );
-    setState(updatedTotal)
-  }
+  
 
   return (
     <div className="flex flex-col gap-2">
@@ -162,19 +77,24 @@ const Todo = (props: ITodoProps) => {
           className="w-[21rem]"
           placeholder="New Category"
           id="category"
-          value={addCategory}
-          onChange={(e:any) => {setAddCategory(e.target.value)}}
+          value={props.addCategory}
+          onKeyUp={(e:any)=>{
+            if(e.code.toLowerCase() === "enter"){
+              // console.log("hell", e.target.value)
+              props.handleAddingCategory(props.addCategory)
+            }
+          }}
+          onChange={(e:any) => {props.setAddCategory(e.target.value)}}
         />
         {
-          addCategory.length !== 0 &&
-            <Button 
-            // disabled={addCategory.length == 0}
-            size={'icon'} 
-            className="bg-secondary text-foreground hover:text-background hover:bg-foreground/90"
-            onClick={()=>{
-              handleAddingCategory(addCategory)
-            }}
-          >
+          props.addCategory.length !== 0 &&
+            <Button
+              size={'icon'} 
+              className="bg-secondary text-foreground hover:text-background hover:bg-foreground/90"
+              onClick={()=>{
+                props.handleAddingCategory(props.addCategory)
+              }}
+            >
             <Plus 
               className=""
               size={20}
@@ -185,14 +105,13 @@ const Todo = (props: ITodoProps) => {
       <div
         className="flex flex-row items-start gap-6"
       >
-        <DragDropContext onDragEnd={onDragEnd}>
-          {state.map((category, categoryIndex) => (
+        <DragDropContext onDragEnd={props.onDragEnd}>
+          {props.state.map((category:any, categoryIndex:any) => (
             <Droppable key={categoryIndex} droppableId={`${categoryIndex}`}>
               {(provided, snapshot) => (
                 <div className="flex flex-col w-[400px] rounded-lg bg-secondary py-6">
                   <div className="flex align-center items-center justify-between mx-6 mb-4">
                     <Label className="text-xl">{category.title}</Label>
-                    {/* {console.log("Title checkin", category.title)} */}
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button 
@@ -202,9 +121,6 @@ const Todo = (props: ITodoProps) => {
                           className="bg-secondary hover:text-foreground hover:bg-background"
                         >
                           <Plus 
-                            // onClick={()=>{
-                            //   handleAddingCategory(addCategory)
-                            // }}
                             className=""
                             size={20}
                           />
@@ -228,7 +144,6 @@ const Todo = (props: ITodoProps) => {
                                 </Label>
                                 <Input
                                   id="task_name"
-                                  // className="w-full"
                                   {...form.register("task_name")}
                                 />
                               </div>
@@ -318,7 +233,7 @@ const Todo = (props: ITodoProps) => {
                     className="flex w-96 flex-col w-full gap-4"
                     {...provided.droppableProps}
                   >
-                    {category.taskItems.map((taskItem, taskIndex) => (
+                    {category.taskItems.map((taskItem:any, taskIndex:any) => (
                       <Draggable
                         key={taskItem.id}
                         draggableId={taskItem.id}
@@ -336,14 +251,9 @@ const Todo = (props: ITodoProps) => {
                                 justifyContent: "space-around"
                               }}
                             >
-                            {/* <Button
-                              type="button"
-                              size={"icon"}
-                            >
-                            </Button> */}
                               <KanbanCard
-                                state={state}
-                                setState={setState}
+                                state={props.state}
+                                setState={props.setState}
                                 categoryIndex={categoryIndex}
                                 taskIndex={taskIndex}
                                 task_name={taskItem.task_name}
@@ -351,19 +261,6 @@ const Todo = (props: ITodoProps) => {
                                 badgeText={taskItem.badge_text}
                                 badgeTheme={taskItem.badge_color}
                               />
-                              {/* {item.description} */}
-                              {/* <button
-                                type="button"
-                                onClick={() => {
-                                  const newState = [...state];
-                                  newState[categoryIndex].splice(index, 1);
-                                  setState(
-                                    newState.filter(group => group.length)
-                                  );
-                                }}
-                              >
-                                delete
-                              </button> */}
                             </div>
                           </div>
                         )}
@@ -381,4 +278,4 @@ const Todo = (props: ITodoProps) => {
   )
 }
 
-export default Todo
+export default Board
