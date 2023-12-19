@@ -1,20 +1,19 @@
-require('dotenv').config()
-const server_express = require('express')
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser');
- 
+import * as dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import express from 'express';
+import { Request, Response, NextFunction } from 'express';
+import bodyParser from 'body-parser';
+import { todoRouter } from './routes/todo_routes';
 
-// routes import
-const todos = require('./routes/todo_route')
-
+dotenv.config();
 
 // express app.
-const app = server_express()
+const app = express()
 
 
 // middlewares start
 app.use(bodyParser.json());
-app.use((req:any, res:any, next:any)=>{
+app.use((req:Request, res:Response, next:NextFunction)=>{
     console.log("hi from middleware")
     next()
 })
@@ -22,12 +21,13 @@ app.use((req:any, res:any, next:any)=>{
 
 
 // routes consuming start
-app.use('/todo', todos)
+app.use('/todo', todoRouter)
 // routes consuming start
 
 
 // DB connection and server initialization start
-mongoose.connect(process.env.MONGO_URI).then(() => {
+console.log("oh wo wo w =", process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI ?? '').then(() => {
 
   console.log("--------DB connection established")
   app.listen(process.env.PORT, () => {
