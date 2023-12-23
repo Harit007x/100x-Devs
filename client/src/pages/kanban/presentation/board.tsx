@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Plus} from "lucide-react";
+import { Plus, Trash, Trash2} from "lucide-react";
 import { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import {
@@ -40,10 +40,10 @@ interface ITodoProps{
   state: any;
   setState: any;
   onDragEnd:any;
-  addCategory:any;
-  setAddCategory:any;
-  handleAddingCategory:any;
+  handleAddCategory:any;
   handleAddTask:any;
+  handleDeleteTask:any;
+  handleDeleteCategory:any;
 }
 
 // const getItems = (count:number, offset = 0) =>
@@ -64,12 +64,15 @@ const Board = (props: ITodoProps) => {
   const form = useForm()
   const { toast } = useToast()
 
+  const [newCategoryTitle, setNewCategoryTitle] = useState<string>('');
+
+
   const onSubmit = (formData:any) => {
     props.handleAddTask(formData)
     // console.log("form Data -", formData)
   }
   
-
+  // console.log("data =", props.data)
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-between g-6 w-[400px] mb-4">
@@ -77,22 +80,22 @@ const Board = (props: ITodoProps) => {
           className="w-[21rem]"
           placeholder="New Category"
           id="category"
-          value={props.addCategory}
+          value={newCategoryTitle}
           onKeyUp={(e:any)=>{
             if(e.code.toLowerCase() === "enter"){
               // console.log("hell", e.target.value)
-              props.handleAddingCategory(props.addCategory)
+              props.handleAddCategory(newCategoryTitle)
             }
           }}
-          onChange={(e:any) => {props.setAddCategory(e.target.value)}}
+          onChange={(e:any) => {setNewCategoryTitle(e.target.value)}}
         />
         {
-          props.addCategory.length !== 0 &&
+          newCategoryTitle.length !== 0 &&
             <Button
               size={'icon'} 
               className="bg-secondary text-foreground hover:text-background hover:bg-foreground/90"
               onClick={()=>{
-                props.handleAddingCategory(props.addCategory)
+                props.handleAddCategory(newCategoryTitle)
               }}
             >
             <Plus 
@@ -111,7 +114,16 @@ const Board = (props: ITodoProps) => {
               {(provided, snapshot) => (
                 <div className="flex flex-col w-[400px] rounded-lg bg-secondary py-6">
                   <div className="flex align-center items-center justify-between mx-6 mb-4">
-                    <Label className="text-xl">{category.title}</Label>
+                    <div className="flex items-center align-center gap-2">
+                      <Label className="text-xl">{category.title}</Label>
+                      <Trash2 
+                        className="cursor-pointer text-muted-foreground hover:text-red/90 hover:fill-redBackground"
+                        size={20}
+                        onClick={(e:any) => props.handleDeleteCategory(1, category.id)}
+                      />
+
+                    </div>
+
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button 
@@ -147,12 +159,12 @@ const Board = (props: ITodoProps) => {
                                   {...form.register("task_name")}
                                 />
                               </div>
-                              <Input
-                                id="title"
-                                className="hidden"
-                                value={category.title}
-                                {...form.register("title")}
-                              />
+
+                              {/* Hidden fields start*/}
+                                {/* <Input id="title" className="hidden" value={category.title} {...form.register("title")} /> */}
+                                <Input id="category_id" className="hidden" value={category.id} {...form.register("category_id")} />
+                              {/* Hidden fields end*/}
+                              
                               <div className="flex flex-col gap-2">
                                 <Label htmlFor="description">
                                   Description
@@ -252,14 +264,17 @@ const Board = (props: ITodoProps) => {
                               }}
                             >
                               <KanbanCard
+                                category_id={category.id}
                                 state={props.state}
                                 setState={props.setState}
-                                categoryIndex={categoryIndex}
-                                taskIndex={taskIndex}
+                                category_index={categoryIndex}
+                                task_index={taskIndex}
+                                task_id={taskItem.id}
                                 task_name={taskItem.task_name}
                                 description={taskItem.description}
-                                badgeText={taskItem.badge_text}
-                                badgeTheme={taskItem.badge_color}
+                                badge_text={taskItem.badge_text}
+                                badge_theme={taskItem.badge_color}
+                                handleDeleteTask={props.handleDeleteTask}
                               />
                             </div>
                           </div>

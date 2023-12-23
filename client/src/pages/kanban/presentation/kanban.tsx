@@ -4,10 +4,10 @@ interface IKanbanProps{
   state: any
   setState:any
   onDragEnd:any
-  addCategory:any
-  setAddCategory: any
-  handleAddingCategory:any
+  handleAddCategory:any
   handleAddTask:any
+  handleDeleteTask:any
+  handleDeleteCategory:any
 }
 
 const Kanban = (props:IKanbanProps) => {
@@ -31,14 +31,14 @@ const Kanban = (props:IKanbanProps) => {
           className="flex"
           value="board"
         >
-          <Board 
+          <Board
             state={props.state}
             setState={props.setState}
             onDragEnd={props.onDragEnd}
-            addCategory={props.addCategory}
-            setAddCategory={props.setAddCategory}
-            handleAddingCategory={props.handleAddingCategory}
+            handleAddCategory={props.handleAddCategory}
             handleAddTask={props.handleAddTask}
+            handleDeleteTask={props.handleDeleteTask}
+            handleDeleteCategory={props.handleDeleteCategory}
           />
         </TabsContent>
       </Tabs>

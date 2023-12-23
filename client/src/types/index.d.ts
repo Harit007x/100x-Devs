@@ -55,6 +55,7 @@ export type ListItem = {
 }
 
 export type TaskList = {
+  id?: number;
   title: string;
   taskItems: ListItem[];
 }

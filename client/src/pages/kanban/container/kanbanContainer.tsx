@@ -1,23 +1,48 @@
 import { DropItem, TaskList } from '@/types';
 import Kanban from '../presentation/kanban';
+import axios from 'axios';
 import { toast } from '@/components/ui/use-toast';
-import { useState } from 'react';
-
-type commonType = {
-  index: number;
-  droppableId: string;
-};
+import { useEffect, useState } from 'react';
 
 function KanbanContainer() {
-  
+  // const [data, setData] = useState<any>([]);
+  const [state, setState] = useState<TaskList[]>([]);
+  const [defaultTasks, setDefaultTasks] = useState<TaskList[]>([]);
+  const [mapping, setMapping] = useState<any>([])
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/kanban/get-all-tasks');
+      // console.log("Response =", response);
+      // setData(response.data.data);
+      setState(response.data.data);
+      setDefaultTasks(response.data.data);
+    } catch (error) {
+      console.log("Error =", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Call the async function
+  }, []);
+
+  const updateMapping = async (user_id:any, mapping: any) => {
+    try {
+      console.log("oho ho ")
+      const response = await axios.put('http://localhost:3000/kanban/mapping', {
+        user_id: user_id,
+        mapping: mapping,
+      });
+    } catch (error) {
+      console.log("Error =", error);
+    }
+  };
+
   const reorder = (list:TaskList, startIndex: number, endIndex: number) => {
     const result = Array.from(list.taskItems);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
     return {"title": list.title, "taskItems": result };
   };
-
-  const [defaultTasks, setDefaultTasks] = useState<TaskList[]>([]);
 
   const move = (source: TaskList, destination: TaskList, droppableSource: DropItem, droppableDestination: DropItem) => {
     const sourceClone = Array.from(source.taskItems);
@@ -31,8 +56,8 @@ function KanbanContainer() {
     return result;
   };
 
-  const [state, setState] = useState<TaskList[]>([]);
   const onDragEnd = (result:any) => {
+    let transformedData :any = []
     const { source, destination } = result;
 
     if (!destination) {
@@ -41,9 +66,31 @@ function KanbanContainer() {
     const sInd = +source.droppableId;
     const dInd = +destination.droppableId;
     if (sInd === dInd) {
-      const items = reorder(state[sInd], source.index, destination.index);
+      // console.log("data =", state)
+      let items:any = reorder(state[sInd], source.index, destination.index);
+      // console.log('reordered=', items)
       const newState = [...state];
+      items = {...items,"id": state[sInd].id}
+      console.log("Items :", items)
       newState[sInd] = items;
+      console.log("check added =", newState)
+      // newState[sInd] = state[sInd];
+      
+      // console.log("whl data =", data)
+      // console.log("new data =", newState)
+      transformedData = newState.map((category:any) => {
+        const { id, title, taskItems } = category;
+    
+        // Remove the 'index' property from each 'taskItem'
+        const modifiedTaskItems = taskItems.map((item:any) => {
+            const { id } = item;
+            return id ;
+        });
+    
+        return { id, title, taskItems: modifiedTaskItems };
+      });
+      // console.log("up transform =.", transformedData)
+      // setMapping(transformedData);
       setState(newState);
     } else {
       const result = move(state[sInd], state[dInd], source, destination);
@@ -51,62 +98,110 @@ function KanbanContainer() {
       newState[sInd] = result[sInd];
       newState[dInd] = result[dInd];
 
+      transformedData = newState.map((category:any) => {
+        const { id, title, taskItems } = category;
+    
+        // Remove the 'index' property from each 'taskItem'
+        const modifiedTaskItems = taskItems.map((item:any) => {
+            const { id } = item;
+            return id ;
+        });
+    
+        return { id, title, taskItems: modifiedTaskItems };
+      });
+      console.log("down transform =", transformedData)
+      
+      // setMapping(transformedData);
+      
       setState(newState);
     }
-  }
-  const [addCategory, setAddCategory] = useState<string>('');
-
-  const handleAddingCategory = (category: string) => {
-    const words = category.split(" ");
-    const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-    const capitalizedString = capitalizedWords.join(" ");
-    setState([...state, {'title': capitalizedString, 'taskItems': []}])
-    setDefaultTasks([...defaultTasks,{'title': capitalizedString, 'taskItems': []}])
-    setAddCategory('')
-    toast({
-      variant:'default',
-      description: `Category created successfully.`,
-    })
-
+    // console.log("mapping data =", transformedData)
+    updateMapping(1, transformedData)
   }
 
-  const handleAddTask = (formData:any) => {
-    const updatedTotal: any = state.map((list) => {
-      if (list.title === formData.title) {
-        return {
-          ...list,
-          taskItems: [
-            ...list.taskItems,
-            {
-              id: `item-${Date.now()}`,
-              task_name: formData.task_name,
-              description: formData.description,
-              badge_text: formData.badge_text,
-              badge_color: formData.badge_color,
-            }
-          ],
-        };
-      }
-      return list;
+  const handleAddCategory = async (category_title : string) => {
+    console.log("castegroy added =", category_title)
+    try {
+      console.log("oho ho ")
+      const response = await axios.post('http://localhost:3000/kanban/add-category', {
+        "user_id": 1,
+        "title": category_title
+      });
+
+      fetchData()
+
+    } catch (error) {
+      console.log("Error =", error);
+    }finally{
     }
-    );
-    setState(updatedTotal);
-    toast({
-      variant:'default',
-      description: `Task created successfully.`,
-    })
   }
 
+  const handleAddTask = async (formData:any) => {
+    try {
+      console.log("oho ho ")
+      const response = await axios.post('http://localhost:3000/kanban/add-task', {
+        "user_id": 1,
+        "task_name": formData.task_name,
+        "description": formData.description,
+        "badge_text": formData.badge_text,
+        "badge_color": formData.badge_color,
+        "category_id": formData.category_id
+      });
+
+      fetchData()
+
+    } catch (error) {
+      console.log("Error =", error);
+    }finally{
+    }
+  }
+
+  const handleDeleteTask = async (user_id: number, task_id: string, category_id: string) => {
+    console.log("checking the data =", user_id, task_id, category_id)
+    try {
+      console.log("oho ho ")
+      const response = await axios.put('http://localhost:3000/kanban/delete-task', {
+        user_id: user_id,
+        task_id: task_id,
+        category_id: category_id
+      });
+      
+      fetchData()
+    
+    } catch (error) {
+      console.log("Error =", error);
+    }finally{
+    }
+  }
+
+  const handleDeleteCategory = async (user_id: number, category_id: string) => {
+    console.log("checkl params =", user_id, category_id)
+    try {
+      console.log("oho ho ")
+      const response = await axios.put('http://localhost:3000/kanban/delete-category', {
+        user_id: user_id,
+        category_id: category_id
+      });
+      
+      fetchData()
+    
+    } catch (error) {
+      console.log("Error =", error);
+    }finally{
+    }
+  }
+
+  // console.log("board data =", state)
   return (
     <div className='h-screen'>
       <Kanban
         state={state}
         setState={setState}
         onDragEnd={onDragEnd}
-        addCategory={addCategory}
-        setAddCategory={setAddCategory}
-        handleAddingCategory={handleAddingCategory}
+        handleAddCategory={handleAddCategory}
         handleAddTask={handleAddTask}
+        handleDeleteTask={handleDeleteTask}
+        handleDeleteCategory={handleDeleteCategory}
       />
     </div>
   )

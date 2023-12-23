@@ -4,6 +4,7 @@ import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { todoRouter } from './routes/todo_routes';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const app = express()
 
 // middlewares start
 app.use(bodyParser.json());
+app.use(cors())
 app.use((req:Request, res:Response, next:NextFunction)=>{
     console.log("hi from middleware")
     next()
@@ -21,7 +23,7 @@ app.use((req:Request, res:Response, next:NextFunction)=>{
 
 
 // routes consuming start
-app.use('/todo', todoRouter)
+app.use('/kanban', todoRouter)
 // routes consuming start
 
 

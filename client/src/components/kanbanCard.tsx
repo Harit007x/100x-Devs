@@ -15,24 +15,23 @@ import { ListItem, TaskList } from "@/types";
 interface IKanbanBoardProps {
     state: TaskList[],
     setState: Dispatch<SetStateAction<TaskList[]>>;
-    categoryIndex:number,
-    taskIndex:number,
+    category_id: string,
+    category_index:number,
+    task_index:number,
+    task_id:string,
     task_name: string,
     description: string,
-    badgeText: string,
-    badgeTheme?: any
+    badge_text: string,
+    badge_theme?: any,
+    handleDeleteTask:any
 }
 
-const KanbanCard = ({
-        state,
-        setState,
-        categoryIndex,
-        taskIndex,
-        task_name,
-        description,
-        badgeText,
-        badgeTheme,
-    } : IKanbanBoardProps) => {
+const KanbanCard = (props : IKanbanBoardProps) => {
+
+    const callDelete = (user_id: number, task_id: string, category_id: string) => {
+        props.handleDeleteTask(user_id, task_id, category_id)
+    }
+
     return (
         <Card className='w-[370px] h-[160px] flex flex-col justify-between'>
             {/* <div className='flex flex-row items-center align-center gap-2 p-4 text-xs'>
@@ -45,15 +44,15 @@ const KanbanCard = ({
                         <div className="flex justify-between w-[20.6rem] items-center">
                             <div className='flex gap-1 justify-center items-center'>
                                 <Ungroup className="text-foreground/70" size={16}/>
-                                {task_name}
+                                {props.task_name}
                             </div>
                             <Trash 
                                 className="cursor-pointer text-muted-foreground hover:text-red/90 hover:fill-redBackground"
-                                onClick={() => {
-                                    const newState = [...state];
-                                    newState[categoryIndex].taskItems.splice(taskIndex, 1);
-                                    setState(newState);
-                                }}
+                                onClick={(e:any) => callDelete(1, props.task_id, props.category_id)
+                                    // const newState = [...state];
+                                    // newState[categoryIndex].taskItems.splice(taskIndex, 1);
+                                    // setState(newState);
+                                }
                                 size={21}
                             />
                         </div>
@@ -62,12 +61,12 @@ const KanbanCard = ({
                     </CardTitle>
                 </CardHeader>
                 <CardContent className='flex w-[300px] h-[60px] flex-row text-start p-0 pl-6 pt-2 pr-2 pb-2 '>
-                    <CardDescription>{description.substring(0, 110) + '...'}</CardDescription>
+                    <CardDescription>{props.description.substring(0, 110) + '...'}</CardDescription>
                 </CardContent>
             </div>
             <CardFooter className='flex flex-row text-start justify-between p-0 px-4 pb-4'>
                 <div className='flex flex-col justify-end h-10 items-center align-center'>
-                    <Badge variant={badgeTheme}>{badgeText}</Badge>
+                    <Badge variant={props.badge_theme}>{props. badge_text}</Badge>
                 </div>
                 <Avatar className='h-8 w-8 self-end'>
                     <AvatarImage src="" />

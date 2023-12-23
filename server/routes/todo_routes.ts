@@ -5,7 +5,11 @@ import { todoController } from '../controllers/todo_controller';
 export const todoRouter = express.Router()
 
 // todo controller
-const {fetchALlTodo, createTodo} = todoController;
+const {fetchALlTodo, createTask, createCategory, updateMapping, deleteTask, deleteCategory} = todoController;
 
-todoRouter.get('/', fetchALlTodo)
-todoRouter.post('/',createTodo)
+todoRouter.get('/get-all-tasks', fetchALlTodo)
+todoRouter.post('/add-task', createTask)
+todoRouter.put('/delete-task', deleteTask)
+todoRouter.put('/delete-category', deleteCategory)
+todoRouter.post('/add-category', createCategory)
+todoRouter.put('/mapping', updateMapping)
