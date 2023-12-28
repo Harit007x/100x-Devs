@@ -6,6 +6,7 @@ interface IKanbanProps{
   onDragEnd:any
   handleAddCategory:any
   handleAddTask:any
+  handleUpdateTask:any
   handleDeleteTask:any
   handleDeleteCategory:any
 }
@@ -37,6 +38,7 @@ const Kanban = (props:IKanbanProps) => {
             onDragEnd={props.onDragEnd}
             handleAddCategory={props.handleAddCategory}
             handleAddTask={props.handleAddTask}
+            handleUpdateTask={props.handleUpdateTask}
             handleDeleteTask={props.handleDeleteTask}
             handleDeleteCategory={props.handleDeleteCategory}
           />

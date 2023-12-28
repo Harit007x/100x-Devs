@@ -6,45 +6,21 @@ import MappingModel from '../models/mapping_model';
 
 const fetchALlTodo = async (req:Request, res:Response) => {
     try {
-        const {user_id} = req.body        // Use the find method to get all TODO items from the database
+        const {user_id} = req.body
         const query: any = {};
         
         // undefined check
         user_id && (query.user_id = user_id)
-        // category_id && (query.category = category_id)
-        
+
         const processed_data:any = []
-        // const user_categories = await CategoryModel.find(query).select(['_id', 'index', 'title'])
-        // const todos = await TaskModel.find(query);
         const boardMapping:any = await MappingModel.find(query);
-
-        // const temp = async (id:any) => {
-
-        //     //   Convert the ID string to ObjectId
-        //     const objectId = new ObjectId(id);
-        //     const todos = await TaskModel.findOne({ _id: objectId });
-        //     return todos
-        // }
-        let temp_data:any = {
-            'id': '',
-            'title': '',
-            'index': -1,
-            'taskItems': []
-        }
         
-        console.log("board mappings =", boardMapping[0].mapping)
-        // const fetchTasksByIds = async (ids: string[]) => {
-        //   console.log("All ids =", ids)
-        //     const objectIdArray = ids.map(id => new ObjectId(id));
-        //     return TaskModel.find({ _id: { $in: objectIdArray } }).select(['_id', 'task_name', 'description', 'badge_text', 'badge_color']);
-        //   };
         const fetchTasksByIds = async (ids_array: string[]) => {
-          console.log("All ids =", ids_array);
         
           const objectIdArray = ids_array.map(id => new ObjectId(id));
         
           const tasks = await TaskModel.find({ _id: { $in: objectIdArray } })
-            .select(['_id', 'task_name', 'description', 'badge_text', 'badge_color'])
+            .select(['_id', 'task_name', 'description', 'badge_text', 'badge_color', 'createdAt', 'updatedAt'])
             .lean(); // Convert Mongoose documents to plain JavaScript objects
         
           // Create a map to quickly look up tasks by ID
@@ -56,83 +32,37 @@ const fetchALlTodo = async (req:Request, res:Response) => {
         
           return orderedTasks;
         };
+          
+        for (const item of boardMapping[0].mapping) {
+          const temp_data: any = {
+            'id': item.id,
+            'title': item.title,
+            'taskItems': []
+          };
         
-        // const fetchTasksByIds = async (ids: string[]) => {
-        //   console.log("All ids =", ids)
-        //     let data:any = []
-        //     if(ids.length == 0){
-        //       return
-        //     }
-        //     const objectIdArray = ids.map(id => new ObjectId(id));
-        //     for (const id of objectIdArray) {
-        //       console.log("called id =", id);
-              
-        //       const task = await TaskModel.findOne({ _id: id }).select(['_id', 'task_name', 'description', 'badge_text', 'badge_color']);
-        //       console.log("task zero =", task)
-        //       if (task) {
-        //         data.push(task);
-        //       }
-        //     }
+          const tasks = await fetchTasksByIds(item.taskItems);
 
-        //     // TaskModel.find({ _id: { $in: objectIdArray } }).select(['_id', 'task_name', 'description', 'badge_text', 'badge_color']);
-            
-        //     return data
-        //   };
+          const modifiedTasks = tasks.map((task:any) => {
+              const { _id } = task;
+
+              // Remove the 'index' property from each 'taskItem'
+              let modifiedTaskItems = {
+                id: _id.toString(),
+                task_name: task.task_name,
+                description: task.description,
+                badge_text: task.badge_text,
+                badge_color: task.badge_color,
+                createdAt: task.createdAt,
+                updatedAt: task.updatedAt,
+              }
+              // delete modifiedTaskItems._id
           
-          for (const item of boardMapping[0].mapping) {
-            const temp_data: any = {
-              'id': item.id,
-              'title': item.title,
-              'taskItems': []
-            };
-          
-            const tasks = await fetchTasksByIds(item.taskItems);
-
-            console.log("Tasks are this = ", tasks)
-            const modifiedTasks = tasks.map((task:any) => {
-                const { _id } = task;
-
-                // Remove the 'index' property from each 'taskItem'
-                let modifiedTaskItems = {id: _id.toString(), task_name: task.task_name, description: task.description, badge_text: task.badge_text, badge_color: task.badge_color}
-                // delete modifiedTaskItems._id
-            
-                return modifiedTaskItems;
-              });
-            temp_data.taskItems = modifiedTasks;
-          
-            processed_data.push(temp_data);
-          }
-        // user_categories.map((category:any, index:number) => {
-        //     console.log("category ", category)
-        //     temp_data.id = category._id,
-        //     temp_data.title = category.title
-        //     temp_data.index = category.index
-        //     todos.map((task:any, index:any) => {
-        //         if(task.category == category._id.toString()){
-        //             temp_data.taskItems.push({
-        //                 "id": task._id,
-        //                 "index": task.index,
-        //                 "task_name": task.task_name,
-        //                 "description": task.description,
-        //                 "badge_text": task.badge_text,
-        //                 "badge_color": task.badge_color
-        //             })
-        //         }
-        //     })
-        //     // console.log("wowo =", temp_data)
-        //     processed_data.push(temp_data)
-        //     temp_data = {
-        //         'title': '',
-        //         'index': -1,
-        //         'taskItems': []
-        //     }
-        // })
-
-        // Sort the outer array based on the 'index' property
-        // processed_data.sort((a:any, b:any) => a.index - b.index);
-        // // Sort the 'taskItems' array for each object based on the 'index' property
-        // processed_data.forEach((item:any) => item.taskItems.sort((a:any, b:any) => a.index - b.index));
-
+              return modifiedTaskItems;
+            });
+          temp_data.taskItems = modifiedTasks;
+        
+          processed_data.push(temp_data);
+        }
         res.status(200).json({ success: true, data: processed_data });
     } catch (error) {
         // Handle errors
@@ -142,17 +72,18 @@ const fetchALlTodo = async (req:Request, res:Response) => {
 }
 
 const createCategory = async (req:Request, res:Response) => {
-    // console.log("data =", req.body)
     try {
         const { user_id, title } = req.body;
-    
+
+        const capitalizeTitle = title[0].toUpperCase() + title.slice(1)
+        // console.log("caaaps - ", capitalizeTitle)
+
         const newCategory = new CategoryModel({
-            title,
+            "title": capitalizeTitle,
             user_id,
         });
 
         const savedCategory = await newCategory.save();
-        console.log("cate =", savedCategory)
         const mapping_obj = await MappingModel.findOne({user_id: user_id});
         mapping_obj?.mapping.push(
           {
@@ -163,7 +94,7 @@ const createCategory = async (req:Request, res:Response) => {
         )
         const savingMapping = await mapping_obj?.save()
 
-        res.status(201).json({ success: true, data: savedCategory });
+        res.status(201).json({ success: true, data: {}, message: "Category Created Successfully." });
     } catch (error) {
         console.error('Error creating TODO:', error);
         res.status(500).json({ success: false, error: 'Internal Server Error' });
@@ -171,7 +102,6 @@ const createCategory = async (req:Request, res:Response) => {
 }
 
 const createTask = async (req:Request, res:Response) => {
-    // console.log("data =", req.body)
     try {
         const {
             user_id,
@@ -203,23 +133,51 @@ const createTask = async (req:Request, res:Response) => {
         });
         const savingMapping = await mapping_obj?.save()
 
-        res.status(201).json({ success: true, data: savedTodo });
+        res.status(201).json({ success: true, data: {}, message: "Task Created Successfully." });
     } catch (error) {
         console.error('Error creating TODO:', error);
         res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 }
 
+const updateTask = async (req:Request, res:Response) => {
+  try {
+    const { user_id, task_id, task_name, description, badge_text, badge_color } = req.body;
+    const task_obj_id = new ObjectId(task_id);
+    
+    const task_obj = await TaskModel.findById(task_obj_id);
+
+    // Check if the task is found
+    if (!task_obj) {
+      return res.status(404).json({ success: false, error: 'Task not found' });
+    }
+    console.log("found task = ", task_obj)
+    
+    // Update the properties of the fetched object
+    task_obj.task_name = task_name;
+    task_obj.description = description;
+    task_obj.badge_text = badge_text;
+    task_obj.badge_color = badge_color;
+
+    // Save the updated task object
+    await task_obj.save();
+
+
+    res.status(202).json({success: true, data: {}, message: 'Task Updated Successfully'})
+    
+    } catch (error) {
+      console.error('Error updating or creating mapping:', error);
+      res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+}
+
 const updateMapping = async (req:Request, res:Response) => {
-    // console.log("data =", req.body)
     try {
         const { user_id, mapping } = req.body;
     
         // Check if user_id already exists in the database
         const existingMapping = await MappingModel.findOne({ user_id });
-        console.log("existeing mapping =", existingMapping)
         if (existingMapping) {
-          console.log("min if i fi fi fif  =", mapping)
           // If user_id exists, update the existing document
           existingMapping.mapping = mapping;
           const updatedMapping = await existingMapping.save();
@@ -273,7 +231,7 @@ const deleteTask = async (req: Request, res: Response) => {
       
       // Check if the task was found and deleted
       if (deletedTask.deletedCount === 1) {
-          return res.status(200).json({ success: true, data: { task_obj_id }, message: 'Task deleted successfully' });
+          return res.status(200).json({ success: true, data: { task_obj_id }, message: 'Task Deleted Successfully.' });
       } else {
           return res.status(404).json({ success: false, error: 'Task not found' });
       }
@@ -300,7 +258,6 @@ const deleteCategory = async (req: Request, res: Response) => {
       // Updating the mapping by removing the incoming task id
       const mapping_obj = await MappingModel.findOne({user_id: user_id});
       const indexToRemove:any = mapping_obj?.mapping.findIndex((categoryItem:any) => categoryItem.id === category_id);
-      console.log("Remv ", indexToRemove)
       mapping_obj?.mapping.splice(indexToRemove, 1)
 
       // Save the updated mapping
@@ -308,7 +265,7 @@ const deleteCategory = async (req: Request, res: Response) => {
 
       // Check if the category was found and deleted
       if (deletedCategory.deletedCount === 1) {
-          return res.status(200).json({ success: true, data: { category_obj_id }, message: 'Category deleted successfully' });
+          return res.status(200).json({ success: true, data: { category_obj_id }, message: 'Category Deleted Successfully.' });
       } else {
           return res.status(404).json({ success: false, error: 'Category not found' });
       }
@@ -323,6 +280,7 @@ export const todoController = {
     createCategory,
     createTask,
     fetchALlTodo,
+    updateTask,
     updateMapping,
     deleteTask,
     deleteCategory,

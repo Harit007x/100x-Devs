@@ -28,7 +28,6 @@ app.use('/kanban', todoRouter)
 
 
 // DB connection and server initialization start
-console.log("oh wo wo w =", process.env.MONGO_URI)
 mongoose.connect(process.env.MONGO_URI ?? '').then(() => {
 
   console.log("--------DB connection established")

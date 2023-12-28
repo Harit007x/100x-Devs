@@ -42,6 +42,7 @@ interface ITodoProps{
   onDragEnd:any;
   handleAddCategory:any;
   handleAddTask:any;
+  handleUpdateTask:any;
   handleDeleteTask:any;
   handleDeleteCategory:any;
 }
@@ -85,6 +86,7 @@ const Board = (props: ITodoProps) => {
             if(e.code.toLowerCase() === "enter"){
               // console.log("hell", e.target.value)
               props.handleAddCategory(newCategoryTitle)
+              setNewCategoryTitle('')
             }
           }}
           onChange={(e:any) => {setNewCategoryTitle(e.target.value)}}
@@ -269,11 +271,8 @@ const Board = (props: ITodoProps) => {
                                 setState={props.setState}
                                 category_index={categoryIndex}
                                 task_index={taskIndex}
-                                task_id={taskItem.id}
-                                task_name={taskItem.task_name}
-                                description={taskItem.description}
-                                badge_text={taskItem.badge_text}
-                                badge_theme={taskItem.badge_color}
+                                taskItem={taskItem}
+                                handleUpdateTask={props.handleUpdateTask}
                                 handleDeleteTask={props.handleDeleteTask}
                               />
                             </div>

@@ -130,6 +130,10 @@ function KanbanContainer() {
 
       fetchData()
 
+      toast({
+        description: response.data.message,
+      })
+
     } catch (error) {
       console.log("Error =", error);
     }finally{
@@ -150,6 +154,34 @@ function KanbanContainer() {
 
       fetchData()
 
+      toast({
+        description: response.data.message,
+      })
+
+    } catch (error) {
+      console.log("Error =", error);
+    }finally{
+    }
+  }
+
+  const handleUpdateTask = async (formData:any) => {
+    try {
+      console.log("oho ho =", formData)
+      const response = await axios.put('http://localhost:3000/kanban/update-task', {
+        "user_id": 1,
+        "task_id": formData.task_id,
+        "task_name": formData.task_name,
+        "description": formData.description,
+        "badge_text": formData.badge_text,
+        "badge_color": formData.badge_color,
+      });
+
+      fetchData()
+
+      toast({
+        description: response.data.message,
+      })
+
     } catch (error) {
       console.log("Error =", error);
     }finally{
@@ -167,6 +199,10 @@ function KanbanContainer() {
       });
       
       fetchData()
+
+      toast({
+        description: response.data.message,
+      })
     
     } catch (error) {
       console.log("Error =", error);
@@ -184,6 +220,10 @@ function KanbanContainer() {
       });
       
       fetchData()
+
+      toast({
+        description: response.data.message,
+      })
     
     } catch (error) {
       console.log("Error =", error);
@@ -193,13 +233,14 @@ function KanbanContainer() {
 
   // console.log("board data =", state)
   return (
-    <div className='h-screen'>
+    <div className='h-full'>
       <Kanban
         state={state}
         setState={setState}
         onDragEnd={onDragEnd}
         handleAddCategory={handleAddCategory}
         handleAddTask={handleAddTask}
+        handleUpdateTask={handleUpdateTask}
         handleDeleteTask={handleDeleteTask}
         handleDeleteCategory={handleDeleteCategory}
       />
