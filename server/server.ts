@@ -3,27 +3,42 @@ import mongoose from 'mongoose';
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
-import { todoRouter } from './routes/todo_routes';
 import cors from 'cors';
+import { kanbanRouter } from './routes/kanban_routes';
+import { authRouter } from './routes/auth_routes';
+import { authMiddleware } from './middlewares/auth_middleware';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
 // express app.
 const app = express()
 
-
 // middlewares start
 app.use(bodyParser.json());
-app.use(cors())
-app.use((req:Request, res:Response, next:NextFunction)=>{
-    console.log("hi from middleware")
-    next()
-})
-// middlewares start
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Update with your frontend URL
+//   res.setHeader('Access-Control-Allow-Credentials', 'true');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
+//   if (req.method === 'OPTIONS') {
+//       res.sendStatus(200);
+//   } else {
+//       next();
+//   }
+// });
+
+app.use(cookieParser())
+app.use(cors({
+  credentials:true,
+  origin: 'http://localhost:5173',
+}));
+// middlewares end
 
 // routes consuming start
-app.use('/kanban', todoRouter)
+app.use('/auth', authRouter)
+app.use('/kanban', authMiddleware, kanbanRouter)
 // routes consuming start
 
 

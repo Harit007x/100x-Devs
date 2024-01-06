@@ -3,7 +3,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 interface Task {
-  user_id: number;
+  user_id: mongoose.Types.ObjectId;
   task_name: string;
   description: string;
   badge_text: string;
@@ -15,7 +15,7 @@ interface TaskDocument extends Task, Document {}
 
 const taskSchema = new Schema<TaskDocument>(
   {
-    user_id: { type: Number, required: true },
+    user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true},
     task_name: { type: String, required: true },
     description: { type: String, required: true },
     badge_text: { type: String, required: true },

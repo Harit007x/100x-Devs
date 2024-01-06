@@ -3,10 +3,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 const mappingSchema = new mongoose.Schema({
-  user_id: {
-    type: Number,
-    required: true,
-  },
+  user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true},
   mapping: [
     {
       id: {

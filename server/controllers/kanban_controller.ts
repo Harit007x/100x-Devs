@@ -4,16 +4,11 @@ import TaskModel from '../models/task_model';
 import CategoryModel from '../models/category_model';
 import MappingModel from '../models/mapping_model';
 
-const fetchALlTodo = async (req:Request, res:Response) => {
+const fetchALlTodo = async (req:any, res:Response) => {
     try {
-        const {user_id} = req.body
-        const query: any = {};
-        
-        // undefined check
-        user_id && (query.user_id = user_id)
-
+        const user_id = req.user._id
         const processed_data:any = []
-        const boardMapping:any = await MappingModel.find(query);
+        const boardMapping:any = await MappingModel.findOne({user_id: user_id});
         
         const fetchTasksByIds = async (ids_array: string[]) => {
         
@@ -33,7 +28,7 @@ const fetchALlTodo = async (req:Request, res:Response) => {
           return orderedTasks;
         };
           
-        for (const item of boardMapping[0].mapping) {
+        for (const item of boardMapping.mapping) {
           const temp_data: any = {
             'id': item.id,
             'title': item.title,
@@ -71,12 +66,12 @@ const fetchALlTodo = async (req:Request, res:Response) => {
     }
 }
 
-const createCategory = async (req:Request, res:Response) => {
+const createCategory = async (req:any, res:Response) => {
     try {
-        const { user_id, title } = req.body;
+        const user_id = req.user._id.toString()
+        const { title } = req.body;
 
         const capitalizeTitle = title[0].toUpperCase() + title.slice(1)
-        // console.log("caaaps - ", capitalizeTitle)
 
         const newCategory = new CategoryModel({
             "title": capitalizeTitle,
@@ -94,17 +89,19 @@ const createCategory = async (req:Request, res:Response) => {
         )
         const savingMapping = await mapping_obj?.save()
 
-        res.status(201).json({ success: true, data: {}, message: "Category Created Successfully." });
+        res.status(201).json({ success: true, data: {}, message: "Category Created Successfully" });
     } catch (error) {
         console.error('Error creating TODO:', error);
         res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 }
 
-const createTask = async (req:Request, res:Response) => {
+const createTask = async (req:any, res:Response) => {
     try {
+
+        const user_id = req.user._id.toString()
+
         const {
-            user_id,
             task_name,
             description,
             badge_text,
@@ -133,7 +130,7 @@ const createTask = async (req:Request, res:Response) => {
         });
         const savingMapping = await mapping_obj?.save()
 
-        res.status(201).json({ success: true, data: {}, message: "Task Created Successfully." });
+        res.status(201).json({ success: true, data: {}, message: "Task Created Successfully" });
     } catch (error) {
         console.error('Error creating TODO:', error);
         res.status(500).json({ success: false, error: 'Internal Server Error' });
@@ -142,7 +139,7 @@ const createTask = async (req:Request, res:Response) => {
 
 const updateTask = async (req:Request, res:Response) => {
   try {
-    const { user_id, task_id, task_name, description, badge_text, badge_color } = req.body;
+    const { task_id, task_name, description, badge_text, badge_color } = req.body;
     const task_obj_id = new ObjectId(task_id);
     
     const task_obj = await TaskModel.findById(task_obj_id);
@@ -151,7 +148,6 @@ const updateTask = async (req:Request, res:Response) => {
     if (!task_obj) {
       return res.status(404).json({ success: false, error: 'Task not found' });
     }
-    console.log("found task = ", task_obj)
     
     // Update the properties of the fetched object
     task_obj.task_name = task_name;
@@ -171,9 +167,10 @@ const updateTask = async (req:Request, res:Response) => {
     }
 }
 
-const updateMapping = async (req:Request, res:Response) => {
+const updateMapping = async (req:any, res:Response) => {
     try {
-        const { user_id, mapping } = req.body;
+        const user_id = req.user._id.toString()
+        const { mapping } = req.body;
     
         // Check if user_id already exists in the database
         const existingMapping = await MappingModel.findOne({ user_id });
@@ -198,10 +195,10 @@ const updateMapping = async (req:Request, res:Response) => {
       }
 }
 
-const deleteTask = async (req: Request, res: Response) => {
+const deleteTask = async (req: any, res: Response) => {
   try {
-      const { user_id, task_id, category_id } = req.body;
-
+      const user_id = req.user._id.toString()
+      const { task_id, category_id } = req.body;
       const task_obj_id = new ObjectId(task_id)
       const category_obj_id = new ObjectId(category_id)
       
@@ -231,7 +228,7 @@ const deleteTask = async (req: Request, res: Response) => {
       
       // Check if the task was found and deleted
       if (deletedTask.deletedCount === 1) {
-          return res.status(200).json({ success: true, data: { task_obj_id }, message: 'Task Deleted Successfully.' });
+          return res.status(200).json({ success: true, data: { task_obj_id }, message: 'Task Deleted Successfully' });
       } else {
           return res.status(404).json({ success: false, error: 'Task not found' });
       }
@@ -241,9 +238,10 @@ const deleteTask = async (req: Request, res: Response) => {
   }
 };
 
-const deleteCategory = async (req: Request, res: Response) => {
+const deleteCategory = async (req: any, res: Response) => {
   try {
-      const { user_id, category_id } = req.body;
+      const user_id = req.user._id.toString()
+      const { category_id } = req.body;
 
       const category_obj_id = new ObjectId(category_id)
       
@@ -265,7 +263,7 @@ const deleteCategory = async (req: Request, res: Response) => {
 
       // Check if the category was found and deleted
       if (deletedCategory.deletedCount === 1) {
-          return res.status(200).json({ success: true, data: { category_obj_id }, message: 'Category Deleted Successfully.' });
+          return res.status(200).json({ success: true, data: { category_obj_id }, message: 'Category Deleted Successfully' });
       } else {
           return res.status(404).json({ success: false, error: 'Category not found' });
       }
@@ -276,7 +274,7 @@ const deleteCategory = async (req: Request, res: Response) => {
 };
 
 // export all
-export const todoController = {
+export const kanbanController = {
     createCategory,
     createTask,
     fetchALlTodo,
