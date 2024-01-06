@@ -10,7 +10,7 @@ const AuthContainer = () => {
 
   const handleLogin = async (formData: any) => {
     try{
-      const response = await axios.post('http://localhost:3000/auth/login', formData, {
+      const response = await axios.post('https://100x-devs-kg65.vercel.app/auth/login', formData, {
         withCredentials: true,
       });
 
@@ -31,7 +31,7 @@ const AuthContainer = () => {
 
   const handleRegister = async (formData:any) => {
     try{
-      const response = await axios.post("http://localhost:3000/auth/signup", formData, {
+      const response = await axios.post("https://100x-devs-kg65.vercel.app/auth/signup", formData, {
         withCredentials: true,
       });
 

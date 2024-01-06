@@ -11,7 +11,7 @@ function KanbanContainer() {
   const [defaultTasks, setDefaultTasks] = useState<TaskList[]>([]);
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/kanban/get-all-tasks',  {
+      const response = await axios.get('https://100x-devs-kg65.vercel.app/kanban/get-all-tasks',  {
         withCredentials: true,
       });
       setState(response.data.data);
@@ -28,7 +28,7 @@ function KanbanContainer() {
   const updateMapping = async (user_id:any, mapping: any) => {
     try {
       console.log("oho ho ")
-      const response = await axios.put('http://localhost:3000/kanban/mapping', {
+      const response = await axios.put('https://100x-devs-kg65.vercel.app/kanban/mapping', {
         user_id: user_id,
         mapping: mapping,
       },  {
@@ -127,7 +127,7 @@ function KanbanContainer() {
     console.log("castegroy added =", category_title)
     try {
       console.log("oho ho ")
-      const response = await axios.post('http://localhost:3000/kanban/add-category', {
+      const response = await axios.post('https://100x-devs-kg65.vercel.app/kanban/add-category', {
         "user_id": 1,
         "title": category_title
       },  {
@@ -150,7 +150,7 @@ function KanbanContainer() {
   const handleAddTask = async (formData:any) => {
     try {
       console.log("oho ho ")
-      const response = await axios.post('http://localhost:3000/kanban/add-task', {
+      const response = await axios.post('https://100x-devs-kg65.vercel.app/kanban/add-task', {
         "user_id": 1,
         "task_name": formData.task_name,
         "description": formData.description,
@@ -177,7 +177,7 @@ function KanbanContainer() {
   const handleUpdateTask = async (formData:any) => {
     try {
       console.log("oho ho =", formData)
-      const response = await axios.put('http://localhost:3000/kanban/update-task', {
+      const response = await axios.put('https://100x-devs-kg65.vercel.app/kanban/update-task', {
         "user_id": 1,
         "task_id": formData.task_id,
         "task_name": formData.task_name,
@@ -205,7 +205,7 @@ function KanbanContainer() {
     console.log("checking the data =", user_id, task_id, category_id)
     try {
       console.log("oho ho ")
-      const response = await axios.put('http://localhost:3000/kanban/delete-task', {
+      const response = await axios.put('https://100x-devs-kg65.vercel.app/kanban/delete-task', {
         user_id: user_id,
         task_id: task_id,
         category_id: category_id
@@ -230,7 +230,7 @@ function KanbanContainer() {
     console.log("checkl params =", user_id, category_id)
     try {
       console.log("oho ho ")
-      const response = await axios.put('http://localhost:3000/kanban/delete-category', {
+      const response = await axios.put('https://100x-devs-kg65.vercel.app/kanban/delete-category', {
         user_id: user_id,
         category_id: category_id
       },  {
