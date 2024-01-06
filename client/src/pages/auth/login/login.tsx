@@ -1,14 +1,11 @@
 import {
     Form,
 } from "@/components/ui/form"
-import { useForm, useFormState } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Origin from "../../../assets/origin.png";
-import Dots from "../../../assets/dots.png";
 import Glitch from "../../../assets/glitch.png";
-import Detach from "../../../assets/detached-dots.png"
-import { useState } from "react";
 
 
 interface ILoginProps{

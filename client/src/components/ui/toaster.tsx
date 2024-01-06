@@ -1,13 +1,12 @@
 import {
   Toast,
-  ToastClose,
   ToastDescription,
   ToastProvider,
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
-import { CheckCircle, CheckCircle2, Circle, XCircle } from "lucide-react"
+import { CheckCircle2, XCircle } from "lucide-react"
 
 export function Toaster() {
   const { toasts } = useToast()

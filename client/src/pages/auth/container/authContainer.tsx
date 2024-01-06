@@ -2,7 +2,6 @@ import { toast } from "@/components/ui/use-toast";
 import Login from "../login/login"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Register from "../register/register";
 import { useState } from "react";
 
 const AuthContainer = () => {

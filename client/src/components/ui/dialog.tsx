@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { X, XCircle } from "lucide-react"
+import { XCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 

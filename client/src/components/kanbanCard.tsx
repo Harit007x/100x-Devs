@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import {
     Card,
     CardContent,
@@ -15,7 +15,6 @@ DialogDescription,
 DialogFooter,
 DialogHeader,
 DialogTitle,
-DialogTrigger,
 } from "@/components/ui/dialog"
 import {
     Select,
@@ -39,7 +38,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Trash, Ungroup, Edit2, Ghost, Maximize } from 'lucide-react';
 import { Badge } from "@/components/ui/badge"

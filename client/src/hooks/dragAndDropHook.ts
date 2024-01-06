@@ -1,5 +1,5 @@
 import { DoneItemsState, InProgressItemsState, Task, TodoItemsState } from '@/types';
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 type commonType = {
     index: number;

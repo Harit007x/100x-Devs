@@ -1,7 +1,6 @@
 import KanbanCard from "@/components/kanbanCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TaskList } from "@/types";
 import {
   Dialog,
   DialogClose,
@@ -12,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Plus, Trash, Trash2} from "lucide-react";
+import { Plus, Trash} from "lucide-react";
 import { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import {
@@ -35,7 +34,6 @@ import { Label } from "@/components/ui/label";
 import { useForm } from 'react-hook-form';
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/components/ui/use-toast";
 interface ITodoProps{
   state: any;
   setState: any;
@@ -47,23 +45,9 @@ interface ITodoProps{
   handleDeleteCategory:any;
 }
 
-// const getItems = (count:number, offset = 0) =>
-//   Array.from({ length: count }, (v, k) => k).map(k => ({
-//     id: `item-${k + offset}-${new Date().getTime()}`,
-//     task_name: `Task is ${k+offset}`,
-//     description: `item ${k + offset}`,
-//     badge_color:'green',
-//     badge_text: `badge ${k + offset}`,
-// }));
-
-
-
-
-
-
 const Board = (props: ITodoProps) => {
   const form = useForm()
-  const { toast } = useToast()
+  // const { toast } = useToast()
 
   const [newCategoryTitle, setNewCategoryTitle] = useState<string>('');
 
@@ -113,7 +97,7 @@ const Board = (props: ITodoProps) => {
         <DragDropContext onDragEnd={props.onDragEnd}>
           {props.state.map((category:any, categoryIndex:any) => (
             <Droppable key={categoryIndex} droppableId={`${categoryIndex}`}>
-              {(provided, snapshot) => (
+              {(provided) => (
                 <div className="flex flex-col w-[22rem] bg-secondary/80 rounded-lg p-4">
                   <div className="flex align-center items-center justify-between mb-4">
                     <div className="flex items-center align-center gap-2">
@@ -121,7 +105,7 @@ const Board = (props: ITodoProps) => {
                       <Trash 
                         className="cursor-pointer text-muted-foreground hover:text-red/90 hover:fill-redBackground"
                         size={16}
-                        onClick={(e:any) => props.handleDeleteCategory(1, category.id)}
+                        onClick={() => props.handleDeleteCategory(1, category.id)}
                       />
 
                     </div>
@@ -254,7 +238,7 @@ const Board = (props: ITodoProps) => {
                         draggableId={taskItem.id}
                         index={taskIndex}
                       >
-                        {(provided, snapshot) => (
+                        {(provided) => (
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}

@@ -34,6 +34,7 @@ function KanbanContainer() {
       },  {
         withCredentials: true,
       });
+      console.log(response)
     } catch (error) {
       navigate('/');
       console.log("Error =", error);
