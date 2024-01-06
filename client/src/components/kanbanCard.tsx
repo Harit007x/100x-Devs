@@ -113,9 +113,9 @@ const KanbanCard = (props : IKanbanBoardProps) => {
             <Dialog open={toggleForm} onOpenChange={setToggleForm} >
                 <DialogContent className="sm:max-w-[425px]" onOpenAutoFocus={(e:any) => e.preventDefault()}>
                 <DialogHeader>
-                    <DialogTitle className="text-2xl">{'Update Task'}</DialogTitle>
-                    <DialogDescription>
-                    Manage your tasks effortlessly.
+                    <DialogTitle className="text-xl">{'Update Task'}</DialogTitle>
+                    <DialogDescription className=''>
+                        Manage your tasks effortlessly.
                     </DialogDescription>
                 </DialogHeader>
                 
@@ -214,7 +214,6 @@ const KanbanCard = (props : IKanbanBoardProps) => {
             </Dialog>
 
             {/* Maximize view ------------------------------------------------------------------*/}
-
             <Dialog open={isMaximize} onOpenChange={setIsMaximize} >
                 <DialogContent className="sm:max-w-[425px]" onOpenAutoFocus={(e:any) => e.preventDefault()}>
                     
@@ -241,20 +240,23 @@ const KanbanCard = (props : IKanbanBoardProps) => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-            <Card className='w-[370px] h-[210px] flex flex-col justify-between'>
+
+
+            {/* Card component ------------------------------------------------------------------*/}
+            <Card className='w-[20rem] h-[12rem] flex flex-col justify-between'>
                 {/* <div className='flex flex-row items-center align-center gap-2 p-4 text-xs'>
                     <Clock className='w-4'/>
                     24 Sep - 5 Cot
                 </div> */}
                 <div>
-                    <CardHeader className='flex p-0 pt-4 pl-0 mx-4 flex-col gap-2'>
-                        <div className='flex items-center justify-between border-b pb-4 border-dashed'>
+                    <CardHeader className='flex p-0 pt-3 pl-0 mx-4 flex-col gap-2'>
+                        <div className='flex items-center justify-between border-b pb-3 border-dashed'>
                             <div 
                                 className='flex items-center justify-center w-7 h-7 rounded-sm cursor-pointer text-muted-foreground hover:text-foreground hover:fill-secondary hover:bg-secondary'
                             >
                                 <Ghost
                                     className=""
-                                    size={20}
+                                    size={16}
                                 />
                             </div>
                             <div className='flex gap-0'>
@@ -264,7 +266,7 @@ const KanbanCard = (props : IKanbanBoardProps) => {
                                 >
                                     <Maximize
                                         className=""
-                                        size={20}
+                                        size={16}
                                     />
                                 </div>
                                 <div 
@@ -273,7 +275,7 @@ const KanbanCard = (props : IKanbanBoardProps) => {
                                 >
                                     <Edit2
                                         className=""
-                                        size={20}
+                                        size={16}
                                     />
                                 </div>
                                 <div
@@ -282,13 +284,13 @@ const KanbanCard = (props : IKanbanBoardProps) => {
                                 >
                                     <Trash
                                         className=""
-                                        size={20}
+                                        size={16}
                                     />
                                 </div>
                             </div>
                         </div>
-                        <CardTitle className="text-lg">
-                            <div className="flex justify-between w-[20.6rem] items-center">
+                        <CardTitle className="text-md">
+                            <div className="flex justify-between w-[20rem] items-center">
                                 <div className='flex gap-1 justify-center items-center'>
                                     <Ungroup className="text-foreground/70" size={16}/>
                                     {props.taskItem.task_name}
@@ -296,16 +298,16 @@ const KanbanCard = (props : IKanbanBoardProps) => {
                             </div>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className='flex w-[300px] h-[50px] flex-row text-start p-0 pl-6 pt-2 pr-2 pb-2 '>
+                    <CardContent className='flex w-[300px] h-[50px] flex-row text-start p-0 pl-6 pt-1 pr-2 pb-1 '>
                         <CardDescription>{props.taskItem.description.substring(0, 60) + '...'}</CardDescription>
                     </CardContent>
                 </div>
                 <CardFooter className='flex flex-row text-start justify-between p-0 px-4 pb-4'>
                     <div className='flex flex-col justify-end h-6 items-center align-center'>
-                        <Badge variant={props.taskItem.badge_color}>{props.taskItem.badge_text}</Badge>
+                        <Badge className='text-[0.7rem]' variant={props.taskItem.badge_color}>{props.taskItem.badge_text}</Badge>
                     </div>
-                    <CardContent className='bg-secondary h-[22px] px-2 rounded-md'>
-                        <CardDescription className='flex items-center h-6 m-0 p-0' >
+                    <CardContent className='bg-secondary h-[0.2rem] px-2 rounded-lg'>
+                        <CardDescription className='flex text-[0.8rem] items-center h-6 m-0 p-0' >
                             {dateFormatter(props.taskItem.createdAt)}
                         </CardDescription>
                     </CardContent>

@@ -76,9 +76,9 @@ const Board = (props: ITodoProps) => {
   // console.log("data =", props.data)
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex justify-between g-6 w-[400px] mb-4">
+      <div className="flex justify-between g-6 w-[22rem] mb-4">
         <Input 
-          className="w-[21rem]"
+          className="w-[18rem]"
           placeholder="New Category"
           id="category"
           value={newCategoryTitle}
@@ -114,13 +114,13 @@ const Board = (props: ITodoProps) => {
           {props.state.map((category:any, categoryIndex:any) => (
             <Droppable key={categoryIndex} droppableId={`${categoryIndex}`}>
               {(provided, snapshot) => (
-                <div className="flex flex-col w-[400px] rounded-lg bg-secondary py-6">
-                  <div className="flex align-center items-center justify-between mx-6 mb-4">
+                <div className="flex flex-col w-[22rem] bg-secondary/80 rounded-lg p-4">
+                  <div className="flex align-center items-center justify-between mb-4">
                     <div className="flex items-center align-center gap-2">
-                      <Label className="text-xl">{category.title}</Label>
-                      <Trash2 
+                      <Label className="text-lg">{category.title}</Label>
+                      <Trash 
                         className="cursor-pointer text-muted-foreground hover:text-red/90 hover:fill-redBackground"
-                        size={20}
+                        size={16}
                         onClick={(e:any) => props.handleDeleteCategory(1, category.id)}
                       />
 
@@ -128,21 +128,22 @@ const Board = (props: ITodoProps) => {
 
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button 
-                          size={'icon'}
+                        <Button
                           variant={'outline'}
                           onClick={()=>form.reset({})}
-                          className="bg-secondary hover:text-foreground hover:bg-background"
+                          className="bg-secondary hover:text-foreground w-[1.6rem] h-[2rem] hover:bg-background hover:border-primary/10 border-secondary"
                         >
                           <Plus 
-                            className=""
-                            size={20}
+                            height={'17px'}
+                            width={'17px'}
+                            className="absolute"
+                            // size={30}
                           />
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
-                          <DialogTitle className="text-2xl">{`Add  ${category.title}`}</DialogTitle>
+                          <DialogTitle className="text-xl">{`Add  ${category.title}`}</DialogTitle>
                           <DialogDescription>
                             Manage your tasks effortlessly.
                           </DialogDescription>

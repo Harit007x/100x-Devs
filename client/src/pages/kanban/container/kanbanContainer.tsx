@@ -3,17 +3,17 @@ import Kanban from '../presentation/kanban';
 import axios from 'axios';
 import { toast } from '@/components/ui/use-toast';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function KanbanContainer() {
-  // const [data, setData] = useState<any>([]);
+  let navigate = useNavigate();
   const [state, setState] = useState<TaskList[]>([]);
   const [defaultTasks, setDefaultTasks] = useState<TaskList[]>([]);
-  const [mapping, setMapping] = useState<any>([])
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/kanban/get-all-tasks');
-      // console.log("Response =", response);
-      // setData(response.data.data);
+      const response = await axios.get('http://localhost:3000/kanban/get-all-tasks',  {
+        withCredentials: true,
+      });
       setState(response.data.data);
       setDefaultTasks(response.data.data);
     } catch (error) {
@@ -31,8 +31,11 @@ function KanbanContainer() {
       const response = await axios.put('http://localhost:3000/kanban/mapping', {
         user_id: user_id,
         mapping: mapping,
+      },  {
+        withCredentials: true,
       });
     } catch (error) {
+      navigate('/');
       console.log("Error =", error);
     }
   };
@@ -126,6 +129,8 @@ function KanbanContainer() {
       const response = await axios.post('http://localhost:3000/kanban/add-category', {
         "user_id": 1,
         "title": category_title
+      },  {
+        withCredentials: true,
       });
 
       fetchData()
@@ -135,6 +140,7 @@ function KanbanContainer() {
       })
 
     } catch (error) {
+      navigate('/');
       console.log("Error =", error);
     }finally{
     }
@@ -150,6 +156,8 @@ function KanbanContainer() {
         "badge_text": formData.badge_text,
         "badge_color": formData.badge_color,
         "category_id": formData.category_id
+      },  {
+        withCredentials: true,
       });
 
       fetchData()
@@ -159,6 +167,7 @@ function KanbanContainer() {
       })
 
     } catch (error) {
+      navigate('/');
       console.log("Error =", error);
     }finally{
     }
@@ -174,6 +183,8 @@ function KanbanContainer() {
         "description": formData.description,
         "badge_text": formData.badge_text,
         "badge_color": formData.badge_color,
+      },  {
+        withCredentials: true,
       });
 
       fetchData()
@@ -183,6 +194,7 @@ function KanbanContainer() {
       })
 
     } catch (error) {
+      navigate('/');
       console.log("Error =", error);
     }finally{
     }
@@ -196,6 +208,8 @@ function KanbanContainer() {
         user_id: user_id,
         task_id: task_id,
         category_id: category_id
+      },  {
+        withCredentials: true,
       });
       
       fetchData()
@@ -205,6 +219,7 @@ function KanbanContainer() {
       })
     
     } catch (error) {
+      navigate('/');
       console.log("Error =", error);
     }finally{
     }
@@ -217,6 +232,8 @@ function KanbanContainer() {
       const response = await axios.put('http://localhost:3000/kanban/delete-category', {
         user_id: user_id,
         category_id: category_id
+      },  {
+        withCredentials: true,
       });
       
       fetchData()
@@ -226,6 +243,7 @@ function KanbanContainer() {
       })
     
     } catch (error) {
+      navigate('/');
       console.log("Error =", error);
     }finally{
     }

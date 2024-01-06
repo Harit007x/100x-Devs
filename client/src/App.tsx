@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from './components/ui/toaster';
+import AuthContainer from './pages/auth/container/authContainer';
 
 function App() {
 
@@ -17,9 +18,12 @@ function App() {
       <Toaster/>
         <Router>
             <Routes>
-              <Route path='/' element={<Nav item={dashboardConfig.mainNav} />}>
-                <Route path='/kanban' element={<KanbanContainer />} />
+              <Route path='/' element={<AuthContainer/>}/>
+
+              <Route path='nav' element={<Nav item={dashboardConfig.mainNav} />}>
               </Route>
+              <Route path='kanban' element={<KanbanContainer />} />
+          
             </Routes>
         </Router>
     </ThemeProvider>
