@@ -32,7 +32,7 @@ app.use(bodyParser.json());
 app.use(cookieParser())
 app.use(cors({
   credentials:true,
-  origin: 'https://100x-devs-kg65.vercel.app',
+  origin: 'https://100x-devs-tau.vercel.app',
 }));
 // middlewares end
 
