@@ -12,7 +12,7 @@ import cookieParser from 'cookie-parser';
 dotenv.config();
 
 // express app.
-const app = express()
+export const app = express()
 
 // middlewares start
 app.use(bodyParser.json());
