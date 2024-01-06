@@ -57,6 +57,8 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
       res.clearCookie('access_token');
       res.cookie('access_token', accessToken,{
         httpOnly: true,
+        sameSite: 'none',
+        secure:true,
       })
       next();
 

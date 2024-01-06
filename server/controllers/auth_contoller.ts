@@ -81,12 +81,16 @@ const login = async (req:Request, res:Response) => {
         
         res.cookie('access_token', token, { 
             httpOnly: true,
+            sameSite: 'none',
+            secure:true,
             // maxAge: expiresIn * 1000,
             // secure: false,
             // sameSite: 'strict',
         });
         res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
+            sameSite: 'none',
+            secure:true,
         })
 
         return res.status(201).json({ success: true, data: {}, message: "Logged-In Successfully" });
